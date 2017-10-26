@@ -17,9 +17,7 @@ def extract_contours(threshold_img):
 	cv2.imshow("Morphed",morph_img_threshold)
 	cv2.waitKey(0)
 
-	contours, hierarchy = cv2.findContours(morph_img_threshold,
-                                           mode=cv2.RETR_EXTERNAL,
-                                           method=cv2.CHAIN_APPROX_NONE)
+	im2,contours, hierarchy= cv2.findContours(morph_img_threshold,mode=cv2.RETR_EXTERNAL,method=cv2.CHAIN_APPROX_NONE)
 	return contours
 
 	
@@ -28,4 +26,10 @@ if __name__ == '__main__':
 	print "START" 
 	img = cv2.imread("test.jpeg")
 	threshold_img = preprocess(img)
-	contours = extract_contours(threshold_img)
+	contours= extract_contours(threshold_img)
+	if len(contours)!=0:
+		print len(contours)
+		cv2.drawContours(img, contours, -1, (0,255,0), 1)
+		cv2.imshow("Contours",img)
+		cv2.waitKey(0)
+	
