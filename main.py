@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from copy import deepcopy
 
 def preprocess(img):
 	cv2.imshow("Input",img)
@@ -21,18 +22,33 @@ def extract_contours(threshold_img):
 	return contours
 
 def isMaxWhite(plate):
-	avg = np.mean(plate).astype(uint8)
+	avg = np.mean(plate)
 	if(avg>=100):
 		return True
 	else:
  		return False
 
 def validate(rect):
-	print("TODO!")
+	#print("TODO!")
+	(x, y), (width, height), rect_angle = rectangle
+
+
 
 def func(img,contours):
+	#count=0
+	#print len(contours)
 	for i,cnt in enumerate(contours):
 		min_rect = cv2.minAreaRect(cnt)
+
+		##VERIFY FIRST
+
+		x,y,w,h = cv2.boundingRect(cnt)
+		plate_img = deepcopy(img[y:y+h,x:x+h])
+
+		if(isMaxWhite(plate_img)):
+			count+=1
+	#print count
+
 
 
 
