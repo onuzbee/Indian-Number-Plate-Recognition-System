@@ -9,7 +9,7 @@ def preprocess(img):
 	ret2,threshold_img = cv2.threshold(sobelx,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 	cv2.imshow("Threshold",threshold_img)
 	return threshold_img
-	
+
 def extract_contours(threshold_img):
 	element = cv2.getStructuringElement(shape=cv2.MORPH_RECT, ksize=(17, 3))
 	morph_img_threshold = threshold_img.copy()
@@ -20,16 +20,32 @@ def extract_contours(threshold_img):
 	im2,contours, hierarchy= cv2.findContours(morph_img_threshold,mode=cv2.RETR_EXTERNAL,method=cv2.CHAIN_APPROX_NONE)
 	return contours
 
-	
+def isMaxWhite(plate):
+	avg = np.mean(plate).astype(uint8)
+	if(avg>=100):
+		return True
+	else:
+ 		return False
+
+def validate(rect):
+	print("TODO!")
+
+def func(img,contours):
+	for i,cnt in enumerate(contours):
+		min_rect = cv2.minAreaRect(cnt)
+
+
 
 if __name__ == '__main__':
-	print "START" 
+	print "START"
 	img = cv2.imread("test.jpeg")
 	threshold_img = preprocess(img)
 	contours= extract_contours(threshold_img)
-	if len(contours)!=0:
-		print len(contours)
-		cv2.drawContours(img, contours, -1, (0,255,0), 1)
-		cv2.imshow("Contours",img)
-		cv2.waitKey(0)
-	
+
+	# if len(contours)!=0:
+	# 	print len(contours) #Test
+	# 	cv2.drawContours(img, contours, -1, (0,255,0), 1)
+	# 	cv2.imshow("Contours",img)
+	# 	cv2.waitKey(0)
+
+	func(img,contours)
