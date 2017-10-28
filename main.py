@@ -6,6 +6,7 @@ def preprocess(img):
 	cv2.imshow("Input",img)
 	imgBlurred = cv2.GaussianBlur(img, (5,5), 0)
 	gray = cv2.cvtColor(imgBlurred, cv2.COLOR_BGR2GRAY)
+	#gray = cv2.equalizeHist(gray)
 	sobelx = cv2.Sobel(gray,cv2.CV_8U,1,0,ksize=3)
 	ret2,threshold_img = cv2.threshold(sobelx,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 	cv2.imshow("Threshold",threshold_img)
@@ -30,24 +31,33 @@ def isMaxWhite(plate):
 
 def validate(rect):
 	#print("TODO!")
-	(x, y), (width, height), rect_angle = rectangle
+	(x, y), (width, height), rect_angle = rect
+	angle = 90 - rect_angle if (width < height) else -rect_angle
+	if 15 < abs(angle) < 165:
+		return False
+
+	if height == 0 or width == 0:
+		return False
+	else:
+		return True
 
 
 
 def func(img,contours):
-	#count=0
-	#print len(contours)
+	count=0
+	print len(contours)
 	for i,cnt in enumerate(contours):
 		min_rect = cv2.minAreaRect(cnt)
 
-		##VERIFY FIRST
+		if validate(min_rect):
 
-		x,y,w,h = cv2.boundingRect(cnt)
-		plate_img = deepcopy(img[y:y+h,x:x+h])
+			x,y,w,h = cv2.boundingRect(cnt)
+			plate_img = deepcopy(img[y:y+h,x:x+h])
 
-		if(isMaxWhite(plate_img)):
-			count+=1
-	#print count
+			if(isMaxWhite(plate_img)):
+				count+=1
+
+	print "No. of final cont : " , count
 
 
 
