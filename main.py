@@ -1,3 +1,4 @@
+__author__ = 'Anuj Badhwar'
 import numpy as np
 import cv2
 from copy import deepcopy
@@ -20,11 +21,13 @@ def cleanPlate(plate):
 	plate = cv2.GaussianBlur(plate, (3,3), 0)
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
 
+	#kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (1, 1))
+	#dilate_thresh = cv2.dilate(gray, kernel, iterations=10)
+	cv2.imshow("gray",gray)
+	_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 	kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (1, 1))
-	dilate_thresh = cv2.dilate(gray, kernel, iterations=1)
-	cv2.imshow("dilate",dilate_thresh)
-	cv2.waitKey(0)
-	_, thresh = cv2.threshold(dilate_thresh, 120, 255, cv2.THRESH_BINARY)
+	thresh= cv2.erode(thresh, kernel, iterations=2)
+	thresh= cv2.dilate(thresh, kernel, iterations=1)
 	return thresh
 
 
@@ -78,6 +81,7 @@ def func(img,contours):
 
 			x,y,w,h = cv2.boundingRect(cnt)
 			plate_img = img[y:y+h,x:x+w]
+
 
 			if(isMaxWhite(plate_img)):
 				count+=1
