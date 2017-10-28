@@ -26,7 +26,7 @@ def extract_contours(threshold_img):
 
 def isMaxWhite(plate):
 	avg = np.mean(plate)
-	if(avg>=100):
+	if(avg>=125):
 		return True
 	else:
  		return False
@@ -64,9 +64,9 @@ def func(img,contours):
 
 			if(isMaxWhite(plate_img)):
 				count+=1
-				# img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-				# cv2.imshow("RECTANGLES",img)
-				# cv2.waitKey(0)
+				img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+				cv2.imshow("RECTANGLES",img)
+				cv2.waitKey(0)
 
 	print "No. of final cont : " , count
 
