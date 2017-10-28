@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 from copy import deepcopy
+from PIL import Image
+import pytesseract as tess
 
 def preprocess(img):
 	cv2.imshow("Input",img)
@@ -30,6 +32,8 @@ def isMaxWhite(plate):
 		return True
 	else:
  		return False
+
+
 
 def validateRotation(rect):
 	(x, y), (width, height), rect_angle = rect
@@ -64,6 +68,10 @@ def func(img,contours):
 
 			if(isMaxWhite(plate_img)):
 				count+=1
+				plate_im = Image.fromarray(plate_img)
+				plate_text = tess.image_to_string(plate_im, lang='eng')
+
+				print "test : ",plate_text
 				img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
 				cv2.imshow("RECTANGLES",img)
 				cv2.waitKey(0)
