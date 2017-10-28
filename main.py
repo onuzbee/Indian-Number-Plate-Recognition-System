@@ -13,7 +13,6 @@ def preprocess(img):
 
 	sobelx = cv2.Sobel(gray,cv2.CV_8U,1,0,ksize=3)
 	ret2,threshold_img = cv2.threshold(sobelx,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-	#cv2.imshow("Threshold",threshold_img)
 	return threshold_img
 
 def cleanPlate(plate):
@@ -22,12 +21,12 @@ def cleanPlate(plate):
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
 
 	kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (1, 1))
-	dilate_thresh = cv2.dilate(gray, kernel, iterations=1)
-	_, thresh = cv2.threshold(dilate_thresh, 150, 255, cv2.THRESH_BINARY)
+	dilate_thresh = cv2.erode(gray, kernel, iterations=1)
+	_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 
 	cv2.imshow("thresh",thresh)
 	cv2.waitKey(0)
-
+	return thresh
 
 
 def extract_contours(threshold_img):
@@ -78,16 +77,19 @@ def func(img,contours):
 		if validateRotation(min_rect):
 
 			x,y,w,h = cv2.boundingRect(cnt)
-			plate_img = deepcopy(img[y:y+h,x:x+w])
-			#plate_img = deepcopy(img[x:x+])
+			#plate_img = deepcopy(img[y:y+h,x:x+w])
+			plate_img = img[y:y+h,x:x+w]
+
 			if(isMaxWhite(plate_img)):
 				count+=1
-				cleaned = cleanPlate(plate_img)
-				#plate_im = Image.fromarray(cleaned)
-				#text = tess.image_to_string(plate_im, lang='eng')
+				clean_plate = cleanPlate(plate_img)
+				cv2.imshow("Final Plates",clean_plate)
+				cv2.waitKey(0)
+				plate_im = Image.fromarray(clean_plate)
+				text = tess.image_to_string(plate_im, lang='eng')
 
-				#print "test : ",text
-				# img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+				print "test : ",text
+				#img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
 				# cv2.imshow("RECTANGLES",img)
 				# cv2.waitKey(0)
 
