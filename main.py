@@ -21,11 +21,10 @@ def cleanPlate(plate):
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
 
 	kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (1, 1))
-	dilate_thresh = cv2.erode(gray, kernel, iterations=1)
-	_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-
-	cv2.imshow("thresh",thresh)
+	dilate_thresh = cv2.dilate(gray, kernel, iterations=1)
+	cv2.imshow("dilate",dilate_thresh)
 	cv2.waitKey(0)
+	_, thresh = cv2.threshold(dilate_thresh, 120, 255, cv2.THRESH_BINARY)
 	return thresh
 
 
@@ -60,8 +59,9 @@ def validateRotation(rect):
 
 	if angle>25:
 	 	return False
-
-
+	if height !=0:
+		if(width/height <4):
+			return False
 	if height == 0 or width == 0:
 		return False
 	else:
@@ -77,7 +77,6 @@ def func(img,contours):
 		if validateRotation(min_rect):
 
 			x,y,w,h = cv2.boundingRect(cnt)
-			#plate_img = deepcopy(img[y:y+h,x:x+w])
 			plate_img = img[y:y+h,x:x+w]
 
 			if(isMaxWhite(plate_img)):
