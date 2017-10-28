@@ -16,6 +16,20 @@ def preprocess(img):
 	#cv2.imshow("Threshold",threshold_img)
 	return threshold_img
 
+def cleanPlate(plate):
+	print "CLEANING . . ."
+	plate = cv2.GaussianBlur(plate, (3,3), 0)
+	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
+
+	kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (1, 1))
+	dilate_thresh = cv2.dilate(gray, kernel, iterations=1)
+	_, thresh = cv2.threshold(dilate_thresh, 150, 255, cv2.THRESH_BINARY)
+
+	cv2.imshow("thresh",thresh)
+	cv2.waitKey(0)
+
+
+
 def extract_contours(threshold_img):
 	element = cv2.getStructuringElement(shape=cv2.MORPH_RECT, ksize=(17, 3))
 	morph_img_threshold = threshold_img.copy()
@@ -64,17 +78,18 @@ def func(img,contours):
 		if validateRotation(min_rect):
 
 			x,y,w,h = cv2.boundingRect(cnt)
-			plate_img = deepcopy(img[y:y+h,x:x+h])
-
+			plate_img = deepcopy(img[y:y+h,x:x+w])
+			#plate_img = deepcopy(img[x:x+])
 			if(isMaxWhite(plate_img)):
 				count+=1
-				plate_im = Image.fromarray(plate_img)
-				plate_text = tess.image_to_string(plate_im, lang='eng')
+				cleaned = cleanPlate(plate_img)
+				#plate_im = Image.fromarray(cleaned)
+				#text = tess.image_to_string(plate_im, lang='eng')
 
-				print "test : ",plate_text
-				img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-				cv2.imshow("RECTANGLES",img)
-				cv2.waitKey(0)
+				#print "test : ",text
+				# img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+				# cv2.imshow("RECTANGLES",img)
+				# cv2.waitKey(0)
 
 	print "No. of final cont : " , count
 
