@@ -92,9 +92,9 @@ def func(img,contours):
 				text = tess.image_to_string(plate_im, lang='eng')
 
 				print "test : ",text
-				#img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-				# cv2.imshow("RECTANGLES",img)
-				# cv2.waitKey(0)
+				img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+				cv2.imshow("RECTANGLES",img)
+				cv2.waitKey(0)
 
 	print "No. of final cont : " , count
 
@@ -103,15 +103,15 @@ def func(img,contours):
 
 if __name__ == '__main__':
 	print "START"
-	img = cv2.imread("test.jpeg")
+	img = cv2.imread("testData/test.jpeg")
 	threshold_img = preprocess(img)
 	contours= extract_contours(threshold_img)
 
 	if len(contours)!=0:
 		print len(contours) #Test
-		#cv2.drawContours(img, contours, -1, (0,255,0), 1)
-		#cv2.imshow("Contours",img)
-		#cv2.waitKey(0)
+		# cv2.drawContours(img, contours, -1, (0,255,0), 1)
+		# cv2.imshow("Contours",img)
+		# cv2.waitKey(0)
 
 
 	func(img,contours)
