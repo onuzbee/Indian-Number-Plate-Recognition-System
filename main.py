@@ -18,7 +18,7 @@ def preprocess(img):
 
 def cleanPlate(plate):
 	print "CLEANING PLATE. . ."
-	plate = cv2.GaussianBlur(plate, (3,3), 0)
+	#plate = cv2.GaussianBlur(plate, (3,3), 0)
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
 	kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (1, 1))
 	thresh= cv2.dilate(gray, kernel, iterations=1)
@@ -38,7 +38,8 @@ def cleanPlate(plate):
 		if not satisfy_ratio(max_cntArea,w,h):
 			return plate,None
 
-		cleaned_final = plate[y:y+h, x:x+w]
+		cleaned_final = thresh[y:y+h, x:x+w]
+		cv2.imshow("Function",cleaned_final)
 		return plate,[x,y,w,h]
 
 	else:
@@ -119,7 +120,7 @@ def func(img,contours):
 				if rect:
 					x1,y1,w1,h1 = rect
 					x,y,w,h = x+x1,y+y1,w1,h1
-					cv2.imshow("Final Plates",clean_plate)
+					cv2.imshow("Cleaned Plate",clean_plate)
 					cv2.waitKey(0)
 					plate_im = Image.fromarray(clean_plate)
 					text = tess.image_to_string(plate_im, lang='eng')
