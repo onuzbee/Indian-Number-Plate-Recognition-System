@@ -41,6 +41,23 @@ def extract_contours(threshold_img):
 	im2,contours, hierarchy= cv2.findContours(morph_img_threshold,mode=cv2.RETR_EXTERNAL,method=cv2.CHAIN_APPROX_NONE)
 	return contours
 
+
+def satisfy_ratio(area, width, height):
+	ratio = float(width) / float(height)
+	if ratio < 1:
+		ratio = 1 / ratio
+
+	aspect = 4.7272
+	min = 15*aspect*15  # minimum area
+	max = 125*aspect*125  # maximum area
+
+	rmin = 3
+	rmax = 6
+
+	if (area < min or area > max) or (ratio < rmin or ratio > rmax):
+		return False
+	return True
+
 def isMaxWhite(plate):
 	avg = np.mean(plate)
 	if(avg>=125):
@@ -52,20 +69,20 @@ def isMaxWhite(plate):
 
 def validateRotation(rect):
 	(x, y), (width, height), rect_angle = rect
-	#angle = 90 - rect_angle if (width < height) else -rect_angle
-	#if 15 < abs(angle) < 165:
-		#return False
+
 	if(width>height):
 		angle = -rect_angle
 	else:
 		angle = 90 + rect_angle
 
-	if angle>25:
+	if angle>15:
 	 	return False
-	if height !=0:
-		if(width/height <4):
-			return False
+
 	if height == 0 or width == 0:
+		return False
+
+	area = height*width
+	if not satisfy_ratio(area,width,height):
 		return False
 	else:
 		return True
@@ -100,10 +117,10 @@ def func(img,contours):
 
 
 
-
 if __name__ == '__main__':
 	print "START"
-	img = cv2.imread("testData/test.jpeg")
+	#img = cv2.imread("testData/test.jpeg")
+	img = cv2.imread("testData/Final.JPG")
 	threshold_img = preprocess(img)
 	contours= extract_contours(threshold_img)
 
