@@ -40,7 +40,7 @@ def cleanPlate(plate):
 
 		cleaned_final = plate[y:y+h, x:x+w]
 		return plate,[x,y,w,h]
-		
+
 	else:
 		return plate,None
 
@@ -114,16 +114,19 @@ def func(img,contours):
 
 			if(isMaxWhite(plate_img)):
 				count+=1
-				clean_plate = cleanPlate(plate_img)
-				cv2.imshow("Final Plates",clean_plate)
-				cv2.waitKey(0)
-				plate_im = Image.fromarray(clean_plate)
-				text = tess.image_to_string(plate_im, lang='eng')
+				clean_plate, rect = cleanPlate(plate_img)
 
-				print "test : ",text
-				img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-				cv2.imshow("RECTANGLES",img)
-				cv2.waitKey(0)
+				if rect:
+					x1,y1,w1,h1 = rect
+					x,y,w,h = x+x1,y+y1,w1,h1
+					cv2.imshow("Final Plates",clean_plate)
+					cv2.waitKey(0)
+					plate_im = Image.fromarray(clean_plate)
+					text = tess.image_to_string(plate_im, lang='eng')
+					print "test : ",text
+					img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+					cv2.imshow("RECTANGLES",img)
+					cv2.waitKey(0)
 
 	print "No. of final cont : " , count
 
