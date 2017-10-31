@@ -35,12 +35,12 @@ def cleanPlate(plate):
 		max_cntArea = areas[max_index]
 		x,y,w,h = cv2.boundingRect(max_cnt)
 
-		if not satisfy_ratio(max_cntArea,w,h):
+		if not ratioCheck(max_cntArea,w,h):
 			return plate,None
 
 		cleaned_final = thresh[y:y+h, x:x+w]
 		cv2.imshow("Function",cleaned_final)
-		return plate,[x,y,w,h]
+		return cleaned_final,[x,y,w,h]
 
 	else:
 		return plate,None
@@ -57,7 +57,7 @@ def extract_contours(threshold_img):
 	return contours
 
 
-def satisfy_ratio(area, width, height):
+def ratioCheck(area, width, height):
 	ratio = float(width) / float(height)
 	if ratio < 1:
 		ratio = 1 / ratio
@@ -95,7 +95,7 @@ def validateRotation(rect):
 		return False
 
 	area = height*width
-	if not satisfy_ratio(area,width,height):
+	if not ratioCheck(area,width,height):
 		return False
 	else:
 		return True
@@ -136,7 +136,7 @@ def func(img,contours):
 if __name__ == '__main__':
 	print "START"
 	#img = cv2.imread("testData/test.jpeg")
-	img = cv2.imread("testData/Final.JPG")
+	img = cv2.imread("testData/test.jpeg")
 	threshold_img = preprocess(img)
 	contours= extract_contours(threshold_img)
 
