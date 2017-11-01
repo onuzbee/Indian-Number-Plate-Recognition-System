@@ -1,4 +1,4 @@
-__author__ = 'Anuj Badhwar'
+
 import numpy as np
 import cv2
 from copy import deepcopy
@@ -11,16 +11,19 @@ def preprocess(img):
 	gray = cv2.cvtColor(imgBlurred, cv2.COLOR_BGR2GRAY)
 
 	sobelx = cv2.Sobel(gray,cv2.CV_8U,1,0,ksize=3)
+	#cv2.imshow("Sobel",sobelx)
+	#cv2.waitKey(0)
 	ret2,threshold_img = cv2.threshold(sobelx,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+	#cv2.imshow("Threshold",threshold_img)
+	#cv2.waitKey(0)
 	return threshold_img
 
 def cleanPlate(plate):
 	print "CLEANING PLATE. . ."
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
-	kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (1, 1))
-	thresh= cv2.dilate(gray, kernel, iterations=1)
+	#kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+	#thresh= cv2.dilate(gray, kernel, iterations=1)
 
-	#cv2.imshow("Gray",gray)
 	_, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 	im1,contours,hierarchy = cv2.findContours(thresh.copy(),cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
@@ -47,8 +50,8 @@ def extract_contours(threshold_img):
 	element = cv2.getStructuringElement(shape=cv2.MORPH_RECT, ksize=(17, 3))
 	morph_img_threshold = threshold_img.copy()
 	cv2.morphologyEx(src=threshold_img, op=cv2.MORPH_CLOSE, kernel=element, dst=morph_img_threshold)
-	#cv2.imshow("Morphed",morph_img_threshold)
-	#cv2.waitKey(0)
+	cv2.imshow("Morphed",morph_img_threshold)
+	cv2.waitKey(0)
 
 	im2,contours, hierarchy= cv2.findContours(morph_img_threshold,mode=cv2.RETR_EXTERNAL,method=cv2.CHAIN_APPROX_NONE)
 	return contours
@@ -77,7 +80,7 @@ def isMaxWhite(plate):
 	else:
  		return False
 
-def validateRotation(rect):
+def validateRotationAndRatio(rect):
 	(x, y), (width, height), rect_angle = rect
 
 	if(width>height):
@@ -100,18 +103,18 @@ def validateRotation(rect):
 
 
 def cleanAndRead(img,contours):
-	count=0
+	#count=0
 	for i,cnt in enumerate(contours):
 		min_rect = cv2.minAreaRect(cnt)
 
-		if validateRotation(min_rect):
+		if validateRotationAndRatio(min_rect):
 
 			x,y,w,h = cv2.boundingRect(cnt)
 			plate_img = img[y:y+h,x:x+w]
 
 
 			if(isMaxWhite(plate_img)):
-				count+=1
+				#count+=1
 				clean_plate, rect = cleanPlate(plate_img)
 
 				if rect:
@@ -134,7 +137,7 @@ if __name__ == '__main__':
 	print "DETECTING PLATE . . ."
 
 	#img = cv2.imread("testData/Final.JPG")
-	img = cv2.imread("testData/test4.JPG")
+	img = cv2.imread("testData/test.jpeg")
 
 	threshold_img = preprocess(img)
 	contours= extract_contours(threshold_img)
