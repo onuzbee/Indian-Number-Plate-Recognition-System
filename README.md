@@ -1,5 +1,5 @@
 # Number-Plate-Recognition-System
-Computer Vision Project(EC353) built as part of University Curiculum.
+Computer Vision Project(EC353).
 
 ### Built Using:
 * Python 2.7
