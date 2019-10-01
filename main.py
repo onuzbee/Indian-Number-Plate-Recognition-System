@@ -19,7 +19,7 @@ def preprocess(img):
 	return threshold_img
 
 def cleanPlate(plate):
-	print "CLEANING PLATE. . ."
+	print("CLEANING PLATE. . .")
 	gray = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
 	#kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
 	#thresh= cv2.dilate(gray, kernel, iterations=1)
@@ -124,7 +124,7 @@ def cleanAndRead(img,contours):
 					cv2.waitKey(0)
 					plate_im = Image.fromarray(clean_plate)
 					text = tess.image_to_string(plate_im, lang='eng')
-					print "Detected Text : ",text
+					print("Detected Text : ",text)
 					img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
 					cv2.imshow("Detected Plate",img)
 					cv2.waitKey(0)
@@ -134,7 +134,7 @@ def cleanAndRead(img,contours):
 
 
 if __name__ == '__main__':
-	print "DETECTING PLATE . . ."
+	print( "DETECTING PLATE . . .")
 
 	#img = cv2.imread("testData/Final.JPG")
 	img = cv2.imread("testData/test.jpeg")
