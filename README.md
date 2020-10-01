@@ -10,4 +10,5 @@ Computer Vision Project(EC353).
 
 
 weather Dust or Rainy season comes and due to this dust and mudd OpenCV is not able to recognize or predict accurate Number plate system.
+It works only Some Proper CLear Images only . try to add ML with that .
 
