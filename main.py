@@ -129,7 +129,7 @@ def cleanAndRead(img,contours):
 					cv2.imshow("Detected Plate",img)
 					cv2.waitKey(0)
 
-	#print "No. of final cont : " , count
+	print "No. of final cont : " , count
 
 
 
@@ -142,11 +142,11 @@ if __name__ == '__main__':
 	threshold_img = preprocess(img)
 	contours= extract_contours(threshold_img)
 
-	#if len(contours)!=0:
-		#print len(contours) #Test
-		# cv2.drawContours(img, contours, -1, (0,255,0), 1)
-		# cv2.imshow("Contours",img)
-		# cv2.waitKey(0)
+	if len(contours)!=0:
+		print len(contours) #Test
+		cv2.drawContours(img, contours, -1, (0,255,0), 1)
+		cv2.imshow("Contours",img)
+		cv2.waitKey(0)
 
 
 	cleanAndRead(img,contours)
